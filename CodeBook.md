@@ -1,4 +1,4 @@
-### Tidy Dataset fields:
+### Tidy Dataset Fields:
 
 The features_info.txt fully explains all variables in the original dataset and they include 561 variables
 
