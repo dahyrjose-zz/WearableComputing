@@ -71,7 +71,6 @@ measIdx <- sqldf("select * from feat where V2 like '%mean()%' or V2 like '%std()
 # Dataset with only mean and standard deviation measurements
 fSet <- mSet[, measIdx]
 
-
 ## 3. Uses descriptive activity names to name the activities in the data set
 
 # Load activity descriptive names
@@ -86,15 +85,16 @@ fSet$ActivityLabels <- merge(mSet, activityLabels, by.x = "ActivityCode", by.y =
 names(fSet) <- c(as.character(feat[measIdx, 2]), "ActivityLabels")
 
 # Savind the tidy data set
-head(fSet)
+write.csv(fSet, file = "tidy_dataset.txt")
 
-## 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+## 5. Creates a second, independent tidy data set with the average of each variable for each activity 
+#     and each subject.
+library(reshape2)
 
+fSet$SubjectCode <- mSet$SubjectCode
 
+meltSet <- melt(fSet, id = c("ActivityLabels", "SubjectCode"), measure.vars = as.character(feat[measIdx, 2]))
 
+setSummary <- sqldf("select ActivityLabels, SubjectCode, variable, avg(value) MeanValue from meltSet group by ActivityLabels, SubjectCode, variable")
 
-
-
-
-
-
+write.csv(setSummary, file = "dataset_summary.txt")
